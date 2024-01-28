@@ -3,6 +3,7 @@ import os
 import logging
 import colorama
 from colorama import Fore, Style
+# import client
 from . import client  # Importing client from a module named "client"
 from urllib.parse import urlparse, parse_qs, urlencode
 import os
@@ -102,20 +103,13 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
     
-    results_dir = "results"
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
-
-    result_file = os.path.join(results_dir, f"{domain}.txt")
-
-    with open(result_file, "w") as f:
-        for url in cleaned_urls:
-            if "?" in url:
-                f.write(url + "\n")
-                if stream_output:
-                    print(url)
+    urls_with_parameters = [url for url in cleaned_urls if "?" in url]
     
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Saved cleaned URLs to {Fore.CYAN + result_file + Style.RESET_ALL}")
+    if stream_output:
+        for url in urls_with_parameters:
+            print(url)
+    
+    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Processed URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
 
 def main():
     """
