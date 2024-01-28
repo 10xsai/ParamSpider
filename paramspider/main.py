@@ -91,17 +91,11 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     Returns:
         None
     """
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
     wayback_uri = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&collapse=urlkey&fl=original&page=/"
     response = client.fetch_url_content(wayback_uri,proxy)
     urls = response.text.split()
     
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
-    
     cleaned_urls = clean_urls(urls, extensions, placeholder)
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Cleaning URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
     
     urls_with_parameters = [url for url in cleaned_urls if "?" in url]
     
@@ -109,24 +103,10 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
         for url in urls_with_parameters:
             print(url)
     
-    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Processed URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
-
 def main():
     """
     Main function to handle command-line arguments and start URL mining process.
     """
-    log_text = """
-           
-                                      _    __       
-   ___  ___ ________ ___ _  ___ ___  (_)__/ /__ ____
-  / _ \/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
- / .__/\_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
-/_/                          /_/                    
-
-                              with <3 by @0xasm0d3us           
-    """
-    colored_log_text = f"{yellow_color_code}{log_text}{reset_color_code}"
-    print(colored_log_text)
     parser = argparse.ArgumentParser(description="Mining URLs from dark corners of Web Archives ")
     parser.add_argument("-d", "--domain", help="Domain name to fetch related URLs for.")
     parser.add_argument("-l", "--list", help="File containing a list of domain names.")
